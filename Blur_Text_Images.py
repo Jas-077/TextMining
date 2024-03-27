@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[15]:
-
-
 from rich.console import Console
 from rich.markdown import Markdown
 import pytesseract
@@ -11,10 +5,6 @@ import os
 import cv2
 import numpy as np
 from PIL import Image
-
-
-# In[16]:
-
 
 def blur_image(file_path):
     img = Image.open(file_path)
@@ -50,9 +40,6 @@ def blur_image(file_path):
     
 
 
-# In[20]:
-
-
 def blur_text(phrase,sensitive_wrd_lst):
     for word in sensitive_wrd_lst:
             replaced_word = '~~'+word+'~~'
@@ -60,9 +47,6 @@ def blur_text(phrase,sensitive_wrd_lst):
     console = Console()
     markdown = Markdown(phrase)
     console.print(markdown)
-
-
-# In[21]:
 
 
 def blurring_sensitive_information(file_type):
@@ -76,19 +60,9 @@ def blurring_sensitive_information(file_type):
         blur_text(phrase,sensitive_wrd_lst)
 
 
-# In[22]:
-
-
+blurring_sensitive_information('image')
 blurring_sensitive_information('text')
 
-
-# In[124]:
-
-
-get_ipython().system('jupyter nbconvert --to script Blur_Text_Images.ipynb')
-
-
-# In[ ]:
 
 
 
