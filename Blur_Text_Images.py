@@ -1,72 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[70]:
-
-
-#get_ipython().system('pip install pytesseract')
-
-
-# In[71]:
-
-
-#get_ipython().system('pip install opencv-python')
-
-
-# In[87]:
-
-
-#get_ipython().system('pip install rich')
-
-
-# In[89]:
+# In[15]:
 
 
 from rich.console import Console
 from rich.markdown import Markdown
-
-
-# In[91]:
-
-
 import pytesseract
 import os
-
-
-# In[92]:
-
-
+import cv2
+import numpy as np
 from PIL import Image
 
 
-# In[93]:
+# In[16]:
 
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-
-# In[118]:
-
-
-def fileType(file_path):
-    if (os.path.splitext(file_path)[-1].lower() == '.png'):
-        detectCoordinatesImage(file_path)
-    else:
-        text_input = 'This is an edited tweet for testing'
-        blurred_list = ['edited','testing'] #Received from ER model
-        for word in blurred_list:
-            replaced_word = '~~'+word+'~~'
-            text_input = text_input.replace(word,replaced_word)
-        console = Console()
-        markdown = Markdown(text_input)
-        console.print(markdown)
-
-
-# In[119]:
-
-
-global_dict_coordinates = {}
-def detectCoordinatesImage(file_path):
+def blur_image(file_path):
     img = Image.open(file_path)
     data = pytesseract.image_to_data(img, output_type='dict')
     boxes = len(data['level'])
@@ -83,22 +33,11 @@ def detectCoordinatesImage(file_path):
                 else:
                     dict_coordinates[data['text'][i]].append([data['left'][i], data['top'][i], data['width'][i], data['height'][i]])
     print(dict_coordinates)
-    global_dict_coordinates = dict_coordinates
-    blur_text(file_path,dict_coordinates)
-    
 
-
-# In[120]:
-
-
-import cv2
-import numpy as np
-def blur_text(file_path, text_coordinates):
-    # Load the image
     image = cv2.imread(file_path)
     
     # Iterate over each word and blur the specified region
-    for word, coordinates in text_coordinates.items():
+    for word, coordinates in dict_coordinates.items():
         for coord in coordinates:
             x, y, w, h = coord
             roi = image[y:y+h, x:x+w]
@@ -108,25 +47,45 @@ def blur_text(file_path, text_coordinates):
     cv2.imshow("Blurred Image", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    
 
 
-# In[121]:
+# In[20]:
 
 
-file_path = r"C:\Users\shami_6wz\Desktop\Tweet_Demo.png"
-fileType(file_path)
+def blur_text(phrase,sensitive_wrd_lst):
+    for word in sensitive_wrd_lst:
+            replaced_word = '~~'+word+'~~'
+            phrase = phrase.replace(word,replaced_word)
+    console = Console()
+    markdown = Markdown(phrase)
+    console.print(markdown)
 
 
-# In[122]:
+# In[21]:
 
 
-#pip install nbconvert
+def blurring_sensitive_information(file_type):
+    if file_type == 'image':
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        file_path = r"C:\Users\shami_6wz\Desktop\Tweet_Demo.png" #-> file path for testing
+        blur_image(file_path)
+    else:
+        phrase = 'This is an edited tweet for testing'
+        sensitive_wrd_lst = ['edited','testing'] #Received from ER model
+        blur_text(phrase,sensitive_wrd_lst)
 
 
-# In[ ]:
+# In[22]:
 
 
-#get_ipython().system('jupyter nbconvert --to script Blur_Text_Images.ipynb')
+blurring_sensitive_information('text')
+
+
+# In[124]:
+
+
+get_ipython().system('jupyter nbconvert --to script Blur_Text_Images.ipynb')
 
 
 # In[ ]:
