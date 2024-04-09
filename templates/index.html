@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>New Post</title>
+        <style> 
+            .inp-img {
+                display: none;
+                
+            }
+            .form { 
+                max-width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+        </style>
+        <script>
+            function displaySelectedImage(event, elementId) {
+                const selectedImage = document.getElementById(elementId);
+                const fileInput = event.target;
+            
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+            
+                    reader.onload = function(e) {
+                        selectedImage.src = e.target.result;
+                    };
+            
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+            }
+            function hide(even) { 
+                document.getElementById("spinner").className = "d-grid"
+                document.getElementById("sub_but").className = "d-none"
+                return true
+            }
+        </script>
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <div class="container-fluid text-center">
+            <h3 class = "display-3">NUS Connect</h3>
+        </div>
+        
+        <div class="mb-3 form border border-5 shadow-sm p-3 mb-5 bg-body rounded">
+
+            <form action="/extract", method="post", enctype="multipart/form-data">
+            <div class="container-fluid">
+            <label for="img-inp" class="form-label rounded">
+                <img id="selectedImage" src="https://iconape.com/wp-content/files/la/10528/png/upload.png"
+            style="width: 300px;" />
+            </label>
+            <input
+                type="file"
+                class="form-control inp-img"
+                name="imagefile"
+                id="img-inp"
+                aria-describedby="fileHelpId"
+                onchange="displaySelectedImage(event, 'selectedImage')"
+            />
+            </div>
+            <label for="txt" class="form-label text-center" for="txtarea">Enter</label>
+            <textarea class="form-control" name="txt"rows="3" id="txtarea"></textarea><br>
+            
+            <div class="d-grid" id="sub_but">
+            <button type="submit" class="btn btn-primary btn-block rounded" onclick="hide(event)">Submit</button>
+            </div>
+
+            <div id="spinner" class="d-none">
+            <button class="btn btn-primary"  >
+            <span class="spinner-border spinner-border-sm" ></span>
+            </button>
+            </div>
+        </form>
+        </div>
+            
+        
+        
+    </body>
